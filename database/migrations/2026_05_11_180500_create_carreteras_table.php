@@ -14,6 +14,11 @@ return new class extends Migration
         Schema::create('carreteras', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->decimal('latitud_inicio', 10, 8);
+            $table->decimal('longitud_inicio', 11, 8);
+            $table->decimal('latitud_fin', 10, 8);
+            $table->decimal('longitud_fin', 11, 8);
+            $table->text('polyline_google');
             $table->timestamps();
         });
     }
@@ -26,6 +31,3 @@ return new class extends Migration
         Schema::dropIfExists('carreteras');
     }
 };
-
-
-

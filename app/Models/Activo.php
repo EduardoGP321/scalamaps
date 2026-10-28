@@ -2,18 +2,31 @@
 
 namespace App\Models;
 
+use App\Traits\HasUserOwnership;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Activo extends Model
 {
+    use HasUserOwnership;
+
     protected $fillable = [
         'tramo_id',
         'tipo_activo_id',
         'cadenamiento',
+        'condicion',
         'latitud',
         'longitud',
-        'lado'
+        'lado',
     ];
+
+    protected static function applyUserOwnershipFilter(Builder $builder, $user): void
+    {
+        $builder->whereHas('tramo.contrato.users', function (Builder $query) use ($user) {
+            $query->where('users.id', $user->id);
+        });
+    }
+
 
     public function obraMenor()
     {
@@ -31,18 +44,8 @@ class Activo extends Model
     {
         return $this->belongsTo(Tramo::class);
     }
-
-    protected static function booted()
+    public function imagenes()
     {
-        static::saving(function ($activo) {
-            if ($activo->tipo_activo_id == 1 && $activo->obraMenor) {
-                $obra = $activo->obraMenor;
-
-                if ($obra->latitud_inicio && $obra->latitud_fin) {
-                    $activo->latitud = ($obra->latitud_inicio + $obra->latitud_fin) / 2;
-                    $activo->longitud = ($obra->longitud_inicio + $obra->longitud_fin) / 2;
-                }
-            }
-        });
+        return $this->morphMany(Imagen::class, 'imageable');
     }
 }

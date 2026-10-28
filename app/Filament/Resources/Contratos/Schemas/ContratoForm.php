@@ -50,14 +50,15 @@ class ContratoForm
 
                         Select::make('empresa_id')
                             ->label('Empresa Ejecutora')
-                            ->relationship('empresa', 'nombre')
+                            ->relationship('empresa', 'name')
                             ->searchable()
                             ->preload()
                             ->required(),
 
-                        Select::make('carretera_id')
-                            ->label('Carretera')
-                            ->relationship('carretera', 'nombre')
+                        Select::make('carreteras')
+                            ->label('Carretera(s)')
+                            ->relationship('carreteras', 'nombre')
+                            ->multiple()
                             ->searchable()
                             ->preload()
                             ->required(),

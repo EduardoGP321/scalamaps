@@ -3,9 +3,7 @@
 namespace App\Filament\Resources\Carreteras\Tables;
 
 use Filament\Actions\ActionGroup;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Support\Icons\Heroicon;
@@ -20,6 +18,21 @@ class CarreterasTable
             ->columns([
                 TextColumn::make('nombre')
                     ->searchable(),
+                TextColumn::make('latitud_inicio')
+                    ->label('Lat. Inicio')
+                    ->numeric(),
+
+                TextColumn::make('longitud_inicio')
+                    ->label('Lon. Inicio')
+                    ->numeric(),
+
+                TextColumn::make('latitud_fin')
+                    ->label('Lat. Fin')
+                    ->numeric(),
+
+                TextColumn::make('longitud_fin')
+                    ->label('Lon. Fin')
+                    ->numeric(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

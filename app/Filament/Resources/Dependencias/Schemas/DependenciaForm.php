@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Dependencias\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -37,7 +38,9 @@ class DependenciaForm
                             ->maxImageWidth('1200')
                             ->maxImageHeight('1200')
                             ->columnSpanFull(),
-                    ])
+
+                    ]),
+
             ])
             ->columns(1);
     }

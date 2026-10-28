@@ -24,9 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        app(PermissionRegistrar::class)
-            ->setPermissionClass(Permission::class)
-            ->setRoleClass(Role::class);
 
         FilamentView::registerRenderHook(
             'panels::body.end',

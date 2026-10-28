@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Empresas\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -26,6 +27,7 @@ class EmpresaForm
                     ->maxImageHeight('1200'),
                 Toggle::make('es_externa')
                     ->required(),
+
             ]);
     }
 }

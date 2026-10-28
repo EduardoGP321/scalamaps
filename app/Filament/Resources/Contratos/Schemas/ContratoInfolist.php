@@ -30,8 +30,10 @@ class ContratoInfolist
                                 TextEntry::make('nombre_corto')
                                     ->label('Nombre Corto del Contrato'),
 
-                                TextEntry::make('carretera.nombre')
-                                    ->label('Nombre de la Carretera')
+                                TextEntry::make('carreteras.nombre')
+                                    ->label('Carreteras del Contrato')
+                                    ->badge()
+                                    ->color('primary')
                                     ->placeholder('No especificada'),
 
                                 TextEntry::make('nombre_completo')
@@ -49,7 +51,7 @@ class ContratoInfolist
                                     ->label('Dependencia/Cliente')
                                     ->color('primary'),
 
-                                TextEntry::make('empresa.nombre') // Usando relación
+                                TextEntry::make('empresa.name') // Usando relación
                                     ->label('Empresa Contratada'),
                             ]),
                     ])->compact(),

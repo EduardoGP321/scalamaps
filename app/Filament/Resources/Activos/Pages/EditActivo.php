@@ -18,4 +18,5 @@ class EditActivo extends EditRecord
             DeleteAction::make(),
         ];
     }
+
 }

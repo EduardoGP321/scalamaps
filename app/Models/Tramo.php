@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\HasUserOwnership;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Facades\Http;
 
 class Tramo extends Model
 {
+    use HasUserOwnership;
     protected $fillable = [
         'contrato_id',
         'carretera_id',
@@ -17,6 +21,13 @@ class Tramo extends Model
         'longitud_fin',
         'polyline_google'
     ];
+
+    protected static function applyUserOwnershipFilter(Builder $builder, $user): void
+    {
+        $builder->whereHas('contrato.users', function (Builder $query) use ($user) {
+            $query->where('users.id', $user->id);
+        });
+    }
 
     // RELACIONES PARA FILAMENT:
     public function contrato()
@@ -32,6 +43,18 @@ class Tramo extends Model
     public function activos()
     {
         return $this->hasMany(Activo::class);
+    }
+
+    public function conceptos(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            ActivoConcepto::class, // El modelo final al que queremos llegar
+            Activo::class,         // El modelo intermedio (puente)
+            'tramo_id',            // Clave foránea en la tabla 'activos'
+            'activo_id',           // Clave foránea en la tabla 'activo_conceptos'
+            'id',                  // Clave local en la tabla 'tramos'
+            'id'                   // Clave local en la tabla 'activos'
+        );
     }
 
     protected static function booted()

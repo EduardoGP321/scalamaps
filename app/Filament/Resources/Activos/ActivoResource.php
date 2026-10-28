@@ -23,6 +23,8 @@ class ActivoResource extends Resource
     protected static ?string $model = Activo::class;
 
     protected static string|BackedEnum|null $navigationIcon = TablerIcon::DirectionSignFilled;
+    
+
 
     protected static string|UnitEnum|null $navigationGroup = 'Operación';
 

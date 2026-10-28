@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,8 +15,9 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable implements FilamentUser, HasTenants
+class User extends Authenticatable implements FilamentUser, HasTenants, HasAvatar
 {
     use HasFactory, Notifiable, HasRoles;
 
@@ -26,7 +28,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         'telefono',
         'dependency_id',
         'is_active',
-        'empresa_id'
+        'avatar_url'
     ];
     protected $hidden = ['password', 'remember_token'];
 
@@ -57,5 +59,17 @@ class User extends Authenticatable implements FilamentUser, HasTenants
     public function dependencia()
     {
         return $this->belongsTo(Dependencia::class, 'dependency_id');
+    }
+
+    public function contratos(): BelongsToMany
+    {
+        return $this->belongsToMany(Contrato::class);
+    }
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url
+            ? Storage::url($this->
+            avatar_url)
+            : null;
     }
 }

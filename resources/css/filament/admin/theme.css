@@ -4,3 +4,58 @@
 @source '../../../../resources/views/filament/**/*';
 @source '../../../../app/Livewire/**/*';
 @source '../../../../resources/views/livewire/**/*';
+
+/* ── Estilos Globales (Independientes del modo) ── */
+.fi-sidebar-nav-groups {
+    padding: 0.5rem !important;
+}
+.fi-sidebar-item-button {
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+}
+.fi-badge {
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+}
+
+.dark .fi-sidebar {
+    background: linear-gradient(180deg, #06142d 0%, #06142d 100%) !important;
+    border-right: 1px solid #6366f130 !important;
+}
+
+.dark .fi-topbar {
+    background: rgba(15, 23, 42, 0.9) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid #6366f120 !important;
+}
+
+.dark .fi-sidebar-item-button:hover {
+    background: #6366f125 !important;
+}
+
+.dark .fi-section,
+.dark .fi-wi-stats-overview-stat {
+    background: linear-gradient(135deg, #06142d, #06142d) !important;
+    border: 1px solid #6366f130 !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+
+.fi-sidebar-item-button.fi-active {
+    background: linear-gradient(135deg, #6366f1, #06b6d4) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4) !important;
+}
+
+/* 1. ESTADO INACTIVO: Todos los iconos de la barra lateral en azul celeste por defecto */
+.fi-sidebar-item .fi-sidebar-item-icon {
+    color: #3FA8E0 !important;
+    fill: #3FA8E0 !important;
+}
+
+/* 2. ESTADO ACTIVO: Cuando el usuario está dentro de esa sección, se transforma en amarillo */
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+.fi-sidebar-item:has(a.fi-sidebar-item-button-active) .fi-sidebar-item-icon {
+    color: #f59e0b !important; /* El amarillo/amber oficial */
+    fill: #f59e0b !important;
+}

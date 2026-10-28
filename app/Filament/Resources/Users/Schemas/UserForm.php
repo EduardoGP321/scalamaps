@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use App\Models\Role;
+use App\Models\Contrato;
+use Daljo25\FilamentTablerIcons\Enums\TablerIcon;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class UserForm
@@ -40,6 +43,17 @@ class UserForm
                         TextInput::make('telefono')
                             ->label('Teléfono')
                             ->tel(),
+
+                        FileUpload::make('avatar_url')
+                            ->label('Foto de Perfil')
+                            ->avatar()
+                            ->disk('public')
+                            ->directory('users/avatars')
+                            ->visibility('public')
+                            ->optimize('webp', 85)
+                            ->maxImageWidth('1200')
+                            ->maxImageHeight('1200')
+                            ->image()
                     ]),
 
                 Section::make('Asignación y Permisos')
@@ -47,23 +61,61 @@ class UserForm
                     ->schema([
                         Select::make('empresas')
                             ->label('Empresas Asignadas')
-                            ->relationship('empresas', 'nombre')
+                            ->relationship('empresas', 'name')
                             ->multiple()
                             ->preload()
-                            ->searchable()
-                            ->required(),
+                            ->searchable(),
 
                         Select::make('roles')
                             ->label('Roles / Permisos')
-                            ->options(Role::all()->pluck('name', 'id'))->multiple()
+                            ->relationship('roles', 'name')
+                            ->multiple()
                             ->preload()
                             ->searchable(),
 
                         Select::make('dependency_id')
-                            ->label('Dependencia')
                             ->relationship('dependencia', 'siglas')
+                            ->label('Dependencia / Institución')
+                            ->prefixIcon(TablerIcon::Building)
+                            ->live()
+                            ->afterStateUpdated(function ($state, $set) {
+                                // Limpiar contratos al cambiar dependencia
+                                $set('contratos', []);
+                            }),
+
+                        // CORRECCIÓN PRINCIPAL:
+                        // Se reemplaza ->relationship() con ->options() + ->saveRelationshipsUsing()
+                        // porque el tercer argumento closure de ->relationship() en Filament v4
+                        // NO inyecta Get $get por tipo-hint — solo lo hace ->options().
+                        Select::make('contratos')
+                            ->label('Contratos Asignados para Supervisión')
+                            ->prefixIcon(TablerIcon::FileText)
+                            ->placeholder('Seleccione los contratos autorizados...')
+                            ->multiple()
                             ->searchable()
-                            ->preload(),
+                            ->live()
+                            ->options(function (Get $get) {
+                                $dependenciaId = $get('dependency_id');
+
+                                if (! $dependenciaId) {
+                                    return [];
+                                }
+
+                                return Contrato::withoutGlobalScope('user_ownership')
+                                    ->where('dependencia_id', $dependenciaId)
+                                    ->pluck('numero_contrato', 'id');
+                            })
+                            // 1. CARGA LOS DATOS AL EDITAR: formatStateUsing se ejecuta siempre al cargar el registro existente
+                            ->formatStateUsing(function ($record) {
+                                return $record ? $record->contratos()->pluck('contratos.id')->toArray() : [];
+                            })
+                            // 2. EVITA SOBREESCRITURA: Le dice a Filament que no intente guardar este campo directo en la tabla 'users'
+                            ->dehydrated(false)
+                            // 3. PROCESA LA RELACIÓN: Sincroniza correctamente en la tabla pivote de muchos a muchos
+                            ->saveRelationshipsUsing(function ($component, $record) {
+                                $record->contratos()->sync($component->getState() ?? []);
+                            })
+                            ->disabled(fn(Get $get) => ! $get('dependency_id')),
 
                         Toggle::make('is_active')
                             ->label('Usuario Activo')

@@ -17,18 +17,14 @@ class MapaGlobal extends Page
     protected string $view = 'filament.pages.mapa-global';
     protected static string|UnitEnum|null $navigationGroup = 'Monitoreo';
 
-
     public ?int $contratoId = null;
 
-    // Sincroniza el ID con la URL
     protected $queryString = ['contratoId'];
 
-    /**
-     * Se ejecuta cuando el usuario cambia el selector de contrato
-     */
+
     public function updatedContratoId($value): void
     {
-        if (!$value) {
+        if (! $value) {
             $this->dispatch('update-map', payload: null);
             return;
         }
@@ -39,14 +35,18 @@ class MapaGlobal extends Page
         }
     }
 
-    /**
-     * Prepara datos para la vista Blade (carga inicial)
-     */
     protected function getViewData(): array
     {
-        $contratos = Contrato::select('id', 'nombre_corto', 'numero_contrato')->get();
+        // Cargamos la relación empresa para mostrar el nombre en el overlay
+        $contratos = Contrato::with('empresa')
+            ->select('id', 'nombre_corto', 'numero_contrato', 'empresa_id')
+            ->orderBy('nombre_corto')
+            ->get();
+
+
 
         $initialGisData = null;
+
         if ($this->contratoId) {
             $contrato = Contrato::find($this->contratoId);
             if ($contrato) {

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Tramos\Schemas;
 
+use App\Models\Contrato;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class TramoForm
 {
@@ -17,12 +19,14 @@ class TramoForm
                 Section::make('Vinculación Operativa')
                     ->columns(2)
                     ->schema([
+
                         Select::make('contrato_id')
-                            ->label('Contrato / Año')
+                            ->label('Contrato')
                             ->relationship('contrato', 'numero_contrato')
                             ->searchable()
                             ->preload()
                             ->required(),
+
 
                         Select::make('carretera_id')
                             ->label('Carretera')
@@ -66,12 +70,12 @@ class TramoForm
                     ]),
 
                 Section::make('Datos de la API de Google')
-                    ->collapsed() // Mantenlo cerrado para no estorbar
+                    ->collapsed()
                     ->schema([
                         Textarea::make('polyline_google')
                             ->label('Polyline String')
                             ->rows(3)
-                            ->disabled() // Se llenará automáticamente después
+                            ->disabled()
                             ->placeholder('Este campo se genera mediante la Routes API'),
                     ]),
             ])

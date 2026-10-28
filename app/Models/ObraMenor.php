@@ -9,7 +9,6 @@ class ObraMenor extends Model
     protected $table = 'obras_menores';
     protected $fillable = [
         'activo_id',
-        'cuerpo',
         'area_hidraulica',
         'altura_terraplen_entrada',
         'altura_terraplen_salida',
@@ -20,7 +19,6 @@ class ObraMenor extends Model
         'material',
         'dimensiones',
         'observaciones',
-        'condicion',
         'latitud_inicio',
         'longitud_inicio',
         'latitud_fin',

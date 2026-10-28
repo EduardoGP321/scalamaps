@@ -42,9 +42,11 @@ class ContratosTable
                     ->searchable()
                     ->toggleable(),
 
-                TextColumn::make('carretera.nombre')
-                    ->label('Carretera')
-                    ->sortable()
+                TextColumn::make('carreteras.nombre')
+                    ->label('Carretera(s)')
+                    ->listWithLineBreaks()
+                    ->limitList(2)
+                    ->expandableLimitedList()
                     ->toggleable(),
 
                 // Datos de Ingeniería (Tramos)
@@ -85,9 +87,9 @@ class ContratosTable
                     ->searchable()
                     ->preload(),
 
-                // Filtro por Carretera
-                SelectFilter::make('carretera')
-                    ->relationship('carretera', 'nombre')
+                // Filtro por Carretera (relación many-to-many via pivot)
+                SelectFilter::make('carreteras')
+                    ->relationship('carreteras', 'nombre')
                     ->searchable()
                     ->preload(),
 
